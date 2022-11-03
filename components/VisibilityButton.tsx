@@ -1,4 +1,4 @@
-import {useVisibilityStore} from "../store/store"
+import {useVisibilityStore} from "../utils/store"
 import shallow from 'zustand/shallow'
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
