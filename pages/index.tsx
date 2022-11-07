@@ -8,9 +8,18 @@ import KeyOutlined from "@mui/icons-material/KeyOutlined"
 import VisibilityButton from "../components/VisibilityButton"
 import {useVisibilityStore} from "../utils/store"
 import Image from "next/image"
+import { useRouter } from "next/router"
 export default function Auth()
 {
     const pass_visible = useVisibilityStore((state) => state.pass_visible );
+    const router = useRouter();
+
+    const loginCallback = () => {
+        router.push("/dashboard")
+
+    }
+
+
     return (
         <Box sx={{display:"flex",
         justifyContent:"center",
@@ -31,8 +40,8 @@ export default function Auth()
             >
             <Image src="/resources/SLB_Logo_RGB_svg.svg" height={150} width={150} alt='SLB logo'/>
             <IconTextField iconStart={<EmailOutlined/>} iconEnd={null} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:16}}} variant="outlined" label='Email'></IconTextField>
-            <IconTextField iconStart={<KeyOutlined/>} iconEnd={<VisibilityButton/>} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:16}}} variant="outlined" label='Password'></IconTextField>
-            <Button sx={{width:'75%', height:'10%', borderRadius:16}} variant="contained" size='large'>Login</Button>
+            <IconTextField iconStart={<KeyOutlined/>} iconEnd={<VisibilityButton/>} type={pass_visible ? null: "password"} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:16}}} variant="outlined" label='Password'></IconTextField>
+            <Button sx={{width:'75%', height:'10%', borderRadius:16}} variant="contained" size='large' onClick={loginCallback}>Login</Button>
 
             
             </Box>

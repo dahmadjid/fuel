@@ -11,5 +11,5 @@ export default function VisibilityButton()
     const [inverseVisibility, pass_visible] = useVisibilityStore((state) => [state.inverseVisibility, state.pass_visible], shallow);
 
 
-    return (<IconButton onClick={inverseVisibility}>{pass_visible ? <Visibility/> : <VisibilityOff/>}</IconButton>)
+    return (<IconButton onClick={inverseVisibility}>{pass_visible ? <VisibilityOff/> : <Visibility/>}</IconButton>)
 }
