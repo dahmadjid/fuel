@@ -15,6 +15,8 @@ export default function Auth()
     const router = useRouter();
 
     const loginCallback = () => {
+
+        
         router.push("/dashboard")
 
     }
@@ -39,9 +41,9 @@ export default function Auth()
             gap:4}}
             >
             <Image src="/resources/SLB_Logo_RGB_svg.svg" height={150} width={150} alt='SLB logo'/>
-            <IconTextField iconStart={<EmailOutlined/>} iconEnd={null} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:16}}} variant="outlined" label='Email'></IconTextField>
-            <IconTextField iconStart={<KeyOutlined/>} iconEnd={<VisibilityButton/>} type={pass_visible ? null: "password"} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:16}}} variant="outlined" label='Password'></IconTextField>
-            <Button sx={{width:'75%', height:'10%', borderRadius:16}} variant="contained" size='large' onClick={loginCallback}>Login</Button>
+            <IconTextField iconStart={<EmailOutlined/>} iconEnd={null} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:3}}} variant="outlined" label='Email'></IconTextField>
+            <IconTextField iconStart={<KeyOutlined/>} iconEnd={<VisibilityButton/>} type={pass_visible ? null: "password"} sx={{width:'75%', height:'10%', [`& fieldset`]: {borderRadius:3}}} variant="outlined" label='Password'></IconTextField>
+            <Button sx={{width:'75%', height:'10%', borderRadius:3}} variant="contained" size='large' onClick={loginCallback}>Login</Button>
 
             
             </Box>
