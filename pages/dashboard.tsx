@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import getData from './api/db'
 import { useQuery, useQueryClient } from 'react-query'
 import { Typography } from '@mui/material';
 import { useState } from 'react';
@@ -19,11 +18,7 @@ import EnhancedTable from '../components/Table'
 export default function Dashboard()
 {
 
-    const queryClient = useQueryClient();
-
-
-    const {data, status} = useQuery('metadata', getData);
-    console.log(data);
+   
     const [pressed, setPressed] = useState(0);
     return (
         <Box sx={{display:"flex",

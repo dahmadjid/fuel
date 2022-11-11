@@ -20,50 +20,31 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { useQuery, useQueryClient } from 'react-query'
+import {getData} from '../utils/db';
 
 interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
+  vehicle_id: string;
+  vehicle_brand: string;
+  consumption_day: number;
+  total_consumption: number;
 }
 
 function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
+  vehicle_id: string,
+  vehicle_brand: string,
+  consumption_day: number,
+  total_consumption: number
 ): Data {
   return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    vehicle_id,
+    vehicle_brand,
+    consumption_day,
+    total_consumption
   };
 }
 
-const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
-  
-  
 
-
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -89,19 +70,7 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
+
 
 interface HeadCell {
   disablePadding: boolean;
@@ -112,35 +81,30 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'name',
+    id: "vehicle_id",
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Vehicle ID',
   },
   {
-    id: 'calories',
-    numeric: true,
+    id: 'vehicle_brand',
+    numeric: false,
     disablePadding: false,
-    label: 'Calories',
+    label: 'Vehicle Brand',
   },
   {
-    id: 'fat',
+    id: 'consumption_day',
     numeric: true,
     disablePadding: false,
-    label: 'Fat (g)',
+    label: 'Consumption (Day)',
   },
   {
-    id: 'carbs',
+    id: 'total_consumption',
     numeric: true,
     disablePadding: false,
-    label: 'Carbs (g)',
+    label: 'Total Consumption',
   },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
+  
 ];
 
 interface EnhancedTableProps {
@@ -203,11 +167,28 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 export default function EnhancedTable() {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('vehicle_brand');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(12);
+
+
+  const queryClient = useQueryClient();
+
+
+  const {data, status} = useQuery('data', () => {return getData("Base Camp 1")});
+
+  let rows = [];
+  if (status === "success"){
+
+      rows = Object.entries(data).map((entry) => {
+      const [key, value] = entry;
+        return createData(key, value[0], value[2], value[3]);
+    })
+  }
+
+
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -220,7 +201,7 @@ export default function EnhancedTable() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n:Data) => n.vehicle_id);
       setSelected(newSelected);
       return;
     }
@@ -284,22 +265,20 @@ export default function EnhancedTable() {
               rowCount={rows.length}
             />
             <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.sort(getComparator(order, orderBy)).slice() */}
-              {stableSort(rows, getComparator(order, orderBy))
+              {rows.sort(getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                .map((row:Data, index) => {
+                  const isItemSelected = isSelected(row.vehicle_id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.vehicle_id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.vehicle_id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -317,12 +296,11 @@ export default function EnhancedTable() {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.vehicle_id}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right">{row.vehicle_brand}</TableCell>
+                      <TableCell align="right">{row.consumption_day}</TableCell>
+                      <TableCell align="right">{row.total_consumption}</TableCell>
                     </TableRow>
                   );
                 })}

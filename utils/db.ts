@@ -20,7 +20,8 @@ const app = initializeApp(firebaseConfig);
 const rtdb = getDatabase(app);
 
 
-export default async function getData()
-{ 
-        return await get(ref(rtdb));
+export async function getData(path:string)
+{
+    return (await get(ref(rtdb, path))).toJSON();
+
 }
