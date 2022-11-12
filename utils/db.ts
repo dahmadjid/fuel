@@ -55,6 +55,8 @@ export const columns: GridColDef[] = [
 export async function getData(path: string): Promise<Array<Data>> {
 	const datasnap = (await get(ref(rtdb, path))).toJSON();
 	if (datasnap === null) {
+		console.log("?");
+
 		return [];
 	}
 	else {
@@ -66,7 +68,7 @@ export async function getData(path: string): Promise<Array<Data>> {
 			id += 1;
 			return createData(id, key, value[0], value[2], value[3]);
 		})
-
+		console.log(rows);
 		return rows
 	}
 	return [];

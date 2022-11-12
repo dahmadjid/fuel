@@ -10,3 +10,4 @@ export const useVisibilityStore = create<visibilityStore>((set) => ({
     inverseVisibility: () => set((state) => ({ pass_visible: !state.pass_visible })),
    
   }))
+
